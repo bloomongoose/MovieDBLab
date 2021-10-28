@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MovieDBLab
 {
@@ -9,9 +11,52 @@ namespace MovieDBLab
             Console.WriteLine("LET'S GOOOOOOOOOOO");
 
             //CreateDB();
+
+            //foreach(Movie m in SearchByGenre("Scifi"))
+            //{
+            //    Console.WriteLine(m.Title);
+            //}
+
+            Console.WriteLine("Welcome to Radeen's Screens. Search by either title or genre. title/genre");
+            string choice = Console.ReadLine();
+
+            List<Movie> result = new List<Movie>();
+            if(choice.ToLower() == "genre")
+            {
+                Console.WriteLine("Please type in a genre");
+                string genre = Console.ReadLine();
+                result = searchByGenre(genre);
+            }
+            else if(choice.ToLower() == "title")
+            {
+                Console.WriteLine("Please type in a title");
+                string title = Console.ReadLine();
+                result = searchByTitle(title);
+            }
+
+            foreach(Movie m in result)
+            {
+                Console.WriteLine($"{m.Title} | {m.Genre} | {m.Runtime} hours ");
+            }
             
         }
-        
+
+        static List<Movie> searchByGenre (string genre)
+        {
+            using(MovieDBContext context = new MovieDBContext())
+            {
+                return context.Movies.Where(m => m.Genre.ToLower() == genre.ToLower()).ToList();
+            }
+        }
+
+        static List<Movie> searchByTitle(string title)
+        {
+            using (MovieDBContext context = new MovieDBContext())
+            {
+                return context.Movies.Where(m => m.Title.ToLower() == title.ToLower()).ToList();
+            }
+        }
+
         //method to create DB
         static void CreateDB()
         {
